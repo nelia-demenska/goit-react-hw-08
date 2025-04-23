@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { register } from '../../redux/auth/operations';
 import css from './RegisterForm.module.css';
@@ -18,11 +19,27 @@ const RegisterSchema = Yup.object().shape({
 
 export default function RegisterForm() {
     const dispatch = useDispatch();
-
+    
     const handleSubmit = (values, { resetForm }) => {
-    dispatch(register(values));
-    resetForm();
-    };
+    const uniqueEmail = values.email.replace('@', `+${Date.now()}@`);
+    const updatedValues = { ...values, email: uniqueEmail };
+
+    // console.log('REGISTRATION PAYLOAD:', updatedValues);
+
+    dispatch(register(updatedValues))
+    .unwrap()
+    .then(() => {
+        toast.success('Registration successful!');
+        resetForm();
+    })
+    .catch(error => {
+        if (error.includes('11000')) {
+        toast.error('This email is already registered');
+        } else {
+        toast.error(`Registration failed: ${error}`);
+        }
+    });
+};
 
     return (
     <Formik
