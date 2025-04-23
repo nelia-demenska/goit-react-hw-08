@@ -14,17 +14,32 @@ const clearAuthHeader = () => {
 };
 
 // РЕЄСТРАЦІЯ
+// export const register = createAsyncThunk(
+//     'auth/register',
+//     async (credentials, thunkAPI) => {
+//     try {
+//         const res = await axios.post('/users/signup', credentials);
+//         setAuthHeader(res.data.token);
+//         return res.data;
+//     } catch (error) {
+//         return thunkAPI.rejectWithValue(error.message);
+//     }
+//     }
+// );
+
 export const register = createAsyncThunk(
-    'auth/register',
-    async (credentials, thunkAPI) => {
+  'auth/register',
+  async (credentials, thunkAPI) => {
     try {
-        const res = await axios.post('/users/signup', credentials);
-        setAuthHeader(res.data.token);
-        return res.data;
+      console.log('REGISTER CREDENTIALS:', credentials); // 👈 додай тут
+      const res = await axios.post('/users/signup', credentials);
+      setAuthHeader(res.data.token);
+      return res.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+      console.error('REGISTER ERROR:', error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.message);
     }
-    }
+  }
 );
 
 // ЛОГІН
