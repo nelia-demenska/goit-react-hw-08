@@ -12,7 +12,7 @@ const RegisterSchema = Yup.object().shape({
     .email('Invalid email')
     .required('Required'),
     password: Yup.string()
-    .min(6, 'Minimum 6 characters')
+    .min(7, 'Minimum 7 characters')
     .required('Required'),
 });
 
