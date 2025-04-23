@@ -1,0 +1,12 @@
+.usermenu {
+    display: flex;
+}
+
+.button {
+    display: block;
+margin-left: 5px;
+height: 35px;
+align-self: center;
+padding-top: 2px;
+padding-bottom: 2px;
+}
