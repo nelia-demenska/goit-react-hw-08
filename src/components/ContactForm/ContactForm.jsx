@@ -15,30 +15,33 @@ export default function ContactForm() {
         .min(3, 'Must be at least 3 characters')
         .required('Required'),
     number: Yup.string()
-        .min(3, 'Must be at least 3 characters')
+        .matches(/^\+?\d{7,14}$/, 'Phone number is not valid')
         .required('Required'),
     });
-        
-    const handleSubmit = (values, { resetForm }) => {
+
+    const handleSubmit = async (values, { resetForm }) => {
     const { name, number } = values;
 
-    const isDuplicate = contacts.some(
+    const isDuplicateName = contacts.some(
         contact => contact.name.toLowerCase() === name.toLowerCase()
     );
+    const isDuplicateNumber = contacts.some(
+        contact => contact.number === number
+    );
 
-    if (isDuplicate) {
-        toast.error(`${name} is already in contacts.`);
+    if (isDuplicateName || isDuplicateNumber) {
+        toast.error('This contact already exists.');
         return;
     }
 
-    dispatch(addContact({ name, number }))
-        .unwrap()
-        .then(() => {
-            toast.success(`${name} added successfully`);
-            resetForm();
-        })
-        .catch(() => toast.error('Failed to add contact'));
-};
+    try {
+        await dispatch(addContact({ name, number })).unwrap();
+        toast.success(`${name} added successfully`);
+        resetForm();
+    } catch {
+        toast.error('Failed to add contact');
+    }
+    };
 
     return (
     <Formik
